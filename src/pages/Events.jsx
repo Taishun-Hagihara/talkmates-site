@@ -55,33 +55,21 @@ export default function Events() {
         return (
             <Link
                 to={`/events/${e.slug}`}
-                style={{
-                    textDecoration: "none",
-                    color: "inherit",
-                    border: "1px solid #eee",
-                    borderRadius: 16,
-                    overflow: "hidden",
-                    display: "block",
-                    background: "white",
-                }}
+                className="block overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 no-underline"
             >
                 {img ? (
-                    <img
-                        src={img}
-                        alt=""
-                        style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }}
-                    />
+                    <img src={img} alt="" className="block h-45 w-full object-cover" />
                 ) : (
-                    <div style={{ width: "100%", height: 180, background: "#f3f4f6" }} />
+                    <div className="h-45 w-full bg-slate-100" />
                 )}
 
-                <div style={{ padding: 14 }}>
-                    <div style={{ fontSize: 14, color: "#64748b" }}>
+                <div className="p-3.5">
+                    <div className="text-sm text-slate-500">
                         {new Date(e.starts_at).toLocaleDateString()}
                     </div>
-                    <div style={{ fontWeight: 700, marginTop: 6 }}>{title}</div>
+                    <div className="mt-1.5 font-bold">{title}</div>
                     {desc && (
-                        <div style={{ marginTop: 6, color: "#334155", fontSize: 14 }}>
+                        <div className="mt-1.5 text-sm text-slate-700">
                             {desc.length > 90 ? desc.slice(0, 90) + "…" : desc}
                         </div>
                     )}
@@ -92,20 +80,22 @@ export default function Events() {
 
     return (
         <div>
-            <h1>{lang === "ja" ? "イベント" : "Events"}</h1>
+            <h1 className="text-[3.2em] leading-[1.1]">{lang === "ja" ? "イベント" : "Events"}</h1>
 
-            {error && <p style={{ color: "crimson" }}>Error: {error}</p>}
+            {error && <p className="text-red-600">Error: {error}</p>}
 
-            <h2 style={{ marginTop: 18 }}>{lang === "ja" ? "次回イベント" : "Next Event"}</h2>
+            <h2 className="mt-4.5 text-2xl font-semibold">
+                {lang === "ja" ? "次回イベント" : "Next Event"}
+            </h2>
             {nextEvent ? (
-                <div style={{ marginTop: 12, maxWidth: 520 }}>
+                <div className="mt-3 max-w-130">
                     <Card e={nextEvent} />
                     {nextEvent.apply_url && (
                         <a
                             href={nextEvent.apply_url}
                             target="_blank"
                             rel="noreferrer"
-                            style={{ display: "inline-block", marginTop: 10 }}
+                            className="mt-2.5 inline-block font-medium text-[#646cff] no-underline transition-colors hover:text-[#535bf2]"
                         >
                             {lang === "ja" ? "参加する" : "Apply"}
                         </a>
@@ -115,16 +105,11 @@ export default function Events() {
                 <p>{lang === "ja" ? "準備中です。" : "Coming soon."}</p>
             )}
 
-            <h2 style={{ marginTop: 28 }}>{lang === "ja" ? "過去イベント" : "Past Events"}</h2>
+            <h2 className="mt-7 text-2xl font-semibold">
+                {lang === "ja" ? "過去イベント" : "Past Events"}
+            </h2>
 
-            <div
-                style={{
-                    marginTop: 12,
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-                    gap: 14,
-                }}
-            >
+            <div className="mt-3 grid gap-3.5 grid-cols-[repeat(auto-fill,minmax(260px,1fr))]">
                 {pastEvents.map((e) => (
                     <Card key={e.id} e={e} />
                 ))}

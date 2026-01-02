@@ -7,15 +7,10 @@ export default function Home() {
         <div>
             <header>
                 <div>
-                    <img
-                        src={TalkMatesLogo}
-                        alt="TalkMates logo"
-                        style={{ width: 160, height: 160, display: "block" }}
-                    />
-
+                    <img src={TalkMatesLogo} alt="TalkMates logo" className="block h-40 w-40" />
                 </div>
             </header>
-            <h1>TalkMates</h1>
+            <h1 className="text-[3.2em] leading-[1.1]">TalkMates</h1>
             <p>
                 {lang === "ja"
                     ? "国際交流サークルです。Eventsページを見てね。"

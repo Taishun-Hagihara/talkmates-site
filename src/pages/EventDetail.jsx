@@ -27,7 +27,7 @@ export default function EventDetail() {
         })();
     }, [slug]);
 
-    if (error) return <p style={{ color: "crimson" }}>Error: {error}</p>;
+    if (error) return <p className="text-red-600">Error: {error}</p>;
     if (!event) return <p>Loading...</p>;
 
     const title = pickLang(lang, event.title_en, event.title_ja);
@@ -38,23 +38,24 @@ export default function EventDetail() {
 
     return (
         <div>
-            <h1>{title}</h1>
-            <p style={{ color: "#64748b" }}>
+            <h1 className="text-[3.2em] leading-[1.1]">{title}</h1>
+            <p className="text-slate-500">
                 {new Date(event.starts_at).toLocaleString()} {event.location ? ` • ${event.location}` : ""}
             </p>
 
             {img && (
-                <img
-                    src={img}
-                    alt=""
-                    style={{ width: "100%", maxHeight: 420, objectFit: "cover", borderRadius: 16 }}
-                />
+                <img src={img} alt="" className="w-full max-h-105 rounded-2xl object-cover" />
             )}
 
-            {desc && <p style={{ marginTop: 14, lineHeight: 1.7 }}>{desc}</p>}
+            {desc && <p className="mt-3.5 leading-[1.7]">{desc}</p>}
 
             {event.apply_url && (
-                <a href={event.apply_url} target="_blank" rel="noreferrer">
+                <a
+                    href={event.apply_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-4 inline-block font-medium text-[#646cff] no-underline transition-colors hover:text-[#535bf2]"
+                >
                     {lang === "ja" ? "参加する" : "Apply"}
                 </a>
             )}
