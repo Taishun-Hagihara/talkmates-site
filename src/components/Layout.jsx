@@ -6,10 +6,10 @@ export default function Layout() {
     const { lang, toggle } = useLang();
 
     return (
-        <div className="w-full font-sans">
+        <div className="w-full h-500 font-sans bg-white">
             <header className="border-b border-slate-200 px-4 py-4">
                 <nav className="flex items-center gap-3">
-                    <img src={TalkMatesLogo} alt="talkmates logo" className="h-5 w-5" />
+                    <img src={TalkMatesLogo} alt="talkmates logo" className="h-18 w-18" />
                     <Link
                         to="/"
                         className="font-medium text-[#646cff] no-underline transition-colors hover:text-[#535bf2]"

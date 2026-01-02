@@ -4,7 +4,7 @@ import TalkMatesLogo from "../assets/TalkMatesLogo.png";
 export default function Home() {
     const { lang } = useLang();
     return (
-        <div>
+        <div className="bg-white">
             <header>
                 <div>
                     <img src={TalkMatesLogo} alt="TalkMates logo" className="block h-40 w-40" />
