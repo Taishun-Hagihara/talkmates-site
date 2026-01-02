@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { useLang } from "../contexts/LangContext";
+import TalkMatesLogo from "../assets/TalkMatesLogo.png"
 
 export default function Layout() {
     const { lang, toggle } = useLang();
@@ -8,6 +9,7 @@ export default function Layout() {
         <div style={{ fontFamily: "system-ui" }}>
             <header style={{ padding: 16, borderBottom: "1px solid #eee" }}>
                 <nav style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                    <img src={TalkMatesLogo} alt="talkmates logo" />
                     <Link to="/">Home</Link>
                     <Link to="/events">Events</Link>
 
