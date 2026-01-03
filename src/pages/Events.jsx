@@ -79,13 +79,13 @@ export default function Events() {
     };
 
     return (
-        <div>
-            <h1 className="text-[3.2em] leading-[1.1]">{lang === "ja" ? "イベント" : "Events"}</h1>
+        <div className="w-13/15 mx-auto">
+            <h1 className="text-slate-800 text-4xl mt-6 font-bold">{lang === "ja" ? "イベント" : "Events"}</h1>
 
             {error && <p className="text-red-600">Error: {error}</p>}
 
-            <h2 className="mt-4.5 text-2xl font-semibold">
-                {lang === "ja" ? "次回イベント" : "Next Event"}
+            <h2 className="text-slate-800 text-2xl mt-6 font-bold">
+                {lang === "ja" ? <div><span className="text-green-600">次回</span>イベント</div> : "Next Event"}
             </h2>
             {nextEvent ? (
                 <div className="mt-3 max-w-130">
@@ -105,8 +105,8 @@ export default function Events() {
                 <p>{lang === "ja" ? "準備中です。" : "Coming soon."}</p>
             )}
 
-            <h2 className="mt-7 text-2xl font-semibold">
-                {lang === "ja" ? "過去イベント" : "Past Events"}
+            <h2 className="text-slate-800 text-2xl mt-6 font-bold">
+                {lang === "ja" ? <div className=""><span className="text-green-600">過去</span>イベント</div> : "Past Events"}
             </h2>
 
             <div className="mt-3 grid gap-3.5 grid-cols-[repeat(auto-fill,minmax(260px,1fr))]">
