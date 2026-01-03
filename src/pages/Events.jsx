@@ -4,9 +4,9 @@ import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
 
 function pickLang(lang, en, ja) {
-    return lang === "ja" && ja ? ja : en;
+    return (lang === "ja") && ja ? ja : en;
 }
-
+//coverUrl は 「Supabase Storage に保存されている画像のパス（cover_path）から、表示に使えるURL文字列を作って返す」 ための関数
 function coverUrl(cover_path) {
     if (!cover_path) return "";
     const { data } = supabase.storage.from("event-covers").getPublicUrl(cover_path);
@@ -29,8 +29,8 @@ export default function Events() {
                 .select("id,slug,starts_at,location,cover_path,title_en,title_ja,description_en,description_ja,apply_url")
                 .gte("starts_at", nowIso)
                 .order("starts_at", { ascending: true })
-                .limit(1)
-                .maybeSingle();
+                .limit(10)
+                ;
 
             const pastRes = await supabase
                 .from("events")
@@ -39,8 +39,7 @@ export default function Events() {
                 .order("starts_at", { ascending: false })
                 .limit(24);
 
-            if (nextRes.error) return setError(nextRes.error.message);
-            if (pastRes.error) return setError(pastRes.error.message);
+            
 
             setNextEvent(nextRes.data);
             setPastEvents(pastRes.data ?? []);
