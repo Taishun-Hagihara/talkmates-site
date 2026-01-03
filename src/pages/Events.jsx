@@ -129,14 +129,7 @@ export default function Events() {
                                 href={nextEvent.apply_url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="
-                mt-3 inline-flex items-center justify-center
-                rounded-full border border-slate-200 bg-white
-                px-4 py-2 text-sm font-semibold text-[#646cff]
-                shadow-sm transition-colors
-                hover:border-slate-300 hover:bg-slate-50
-                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400
-              "
+                                className="mt-3 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#646cff] shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
                             >
                                 {lang === "ja" ? "参加する" : "Apply"}
                             </a>
