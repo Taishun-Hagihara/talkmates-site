@@ -55,13 +55,7 @@ export default function Events() {
         return (
             <Link
                 to={`/events/${e.slug}`}
-                className="
-      group block overflow-hidden rounded-2xl border border-slate-200
-      bg-white text-slate-900 no-underline
-      transition-all duration-200
-      hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg
-      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400
-    "
+                className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
             >
                 {/* image */}
                 <div className="relative aspect-video w-full bg-slate-100">
