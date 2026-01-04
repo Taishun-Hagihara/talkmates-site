@@ -89,9 +89,7 @@ export default function Events() {
             <h1 className="mt-8 text-4xl font-bold tracking-tight text-slate-800">
                 {lang === "ja" ? "イベント" : "Events"}
             </h1>
-
-            
-         
+s
             <div className="mt-10">
                 <div className="flex items-end justify-between gap-3">
                     <h2 className="text-2xl font-bold tracking-tight text-slate-800">
