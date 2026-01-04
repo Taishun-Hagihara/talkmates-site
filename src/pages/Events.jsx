@@ -89,16 +89,16 @@ export default function Events() {
             <h1 className="mt-8 text-4xl font-bold tracking-tight text-slate-800">
                 {lang === "ja" ? "イベント" : "Events"}
             </h1>
-s
+
             <div className="mt-10">
                 <div className="flex items-end justify-between gap-3">
                     <h2 className="text-2xl font-bold tracking-tight text-slate-800">
                         {lang === "ja" ? (
                             <span>
-                                <span className="text-green-600">次回</span>イベント
+                                <span className="text-green-600">次回</span>イベント・予約
                             </span>
                         ) : (
-                            "Next Event"
+                                <div><span className="text-green-600">Next</span>Event・reservation</div>
                         )}
                     </h2>
                 </div>
