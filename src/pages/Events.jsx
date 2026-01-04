@@ -15,7 +15,7 @@ function coverUrl(cover_path) {
 
 export default function Events() {
     const { lang } = useLang();
-    const [nextEvent, setNextEvent] = useState(null);
+    const [nextEvents, setNextEvents] = useState([]);
     const [pastEvents, setPastEvents] = useState([]);
     const [error, setError] = useState("");
 
@@ -29,8 +29,7 @@ export default function Events() {
                 .select("id,slug,starts_at,location,cover_path,title_en,title_ja,description_en,description_ja,apply_url")
                 .gte("starts_at", nowIso)
                 .order("starts_at", { ascending: true })
-                .limit(10)
-                ;
+                .limit(10);
 
             const pastRes = await supabase
                 .from("events")
@@ -41,7 +40,8 @@ export default function Events() {
 
             
 
-            setNextEvent(nextRes.data);
+            setNextEvents(nextRes.data ?? []);
+
             setPastEvents(pastRes.data ?? []);
         })();
     }, []);
@@ -56,17 +56,10 @@ export default function Events() {
                 to={`/events/${e.slug}`}
                 className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
             >
-                {/* image */}
-                <div className="relative aspect-video w-full bg-slate-100">
-                    {img ? (
-                        <img
-                            src={img}
-                            alt=""
-                            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                        />
-                    ) : (
-                        <div className="absolute inset-0" />
-                    )}
+                
+                <div className="relative aspect-video w-full bg-slate-100 h-120">
+                    <img src={img} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
+                    
                 </div>
 
                 <div className="p-4">
@@ -97,13 +90,8 @@ export default function Events() {
                 {lang === "ja" ? "イベント" : "Events"}
             </h1>
 
-            {error && (
-                <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-                    Error: {error}
-                </p>
-            )}
-
-            {/* Next Event */}
+            
+         
             <div className="mt-10">
                 <div className="flex items-end justify-between gap-3">
                     <h2 className="text-2xl font-bold tracking-tight text-slate-800">
@@ -119,29 +107,21 @@ export default function Events() {
 
                 <div className="mt-3 h-px w-full bg-slate-200" />
 
-                {nextEvent ? (
-                    <div className="mt-5 max-w-xl">
-                        <Card e={nextEvent} />
-
-                        {nextEvent.apply_url && (
-                            <a
-                                href={nextEvent.apply_url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="mt-3 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#646cff] shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-                            >
-                                {lang === "ja" ? "参加する" : "Apply"}
-                            </a>
-                        )}
+                {nextEvents.length ? (
+                    <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        {nextEvents.map((e) => (
+                            <Card key={e.id} e={e} />
+                        ))}
                     </div>
                 ) : (
                     <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-600">
                         {lang === "ja" ? "準備中です。" : "Coming soon."}
                     </div>
                 )}
+
             </div>
 
-            {/* Past Events */}
+
             <div className="mt-12">
                 <h2 className="text-2xl font-bold tracking-tight text-slate-800">
                     {lang === "ja" ? (
