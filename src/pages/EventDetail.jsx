@@ -27,7 +27,7 @@ export default function EventDetail() {
         })();
     }, [slug]);
 
-    if (error) return <p className="text-red-600">Error: {error}</p>;
+
     if (!event) return <p>Loading...</p>;
 
     const title = pickLang(lang, event.title_en, event.title_ja);
@@ -57,28 +57,22 @@ export default function EventDetail() {
                 </div>
             </div>
 
-            {/* Image */}
-            {img && (
-                <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
-                    <div className="relative aspect-video w-full">
-                        <img
-                            src={img}
-                            alt=""
-                            className="absolute inset-0 h-full w-full object-cover"
-                        />
-                    </div>
+            <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+                <div className="relative aspect-video w-full h-120">
+                    <img
+                        src={img}
+                        alt=""
+                        className="absolute inset-0 h-full w-full object-cover"
+                    />
                 </div>
-            )}
+            </div>
 
-            {/* Description */}
-            {desc && (
-                <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-                    <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-slate-800">
-                        {desc}
-                    </p>
-                </div>
-            )}
-
+            <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-slate-800">
+                    {desc}
+                </p>
+            </div>
+            
             {/* CTA */}
             {event.apply_url && (
                 <div className="mt-6 flex flex-wrap gap-3">
