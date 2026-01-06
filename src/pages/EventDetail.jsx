@@ -28,7 +28,12 @@ export default function EventDetail() {
     }, [slug]);
 
 
-    if (!event) return <p>Loading...</p>;
+    if (!event) return (
+        <div>
+            <p>実装中...</p>
+            <p>一旦は、Google Formのリンクをここに載せておくつもり、後にここから応募できるようにする</p>
+        </div>
+    );
 
     const title = pickLang(lang, event.title_en, event.title_ja);
     const desc = pickLang(lang, event.description_en, event.description_ja);
