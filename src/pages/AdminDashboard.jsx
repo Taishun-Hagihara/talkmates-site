@@ -61,7 +61,7 @@ export default function AdminDashboard() {
     useEffect(() => {
         load();
 
-        // リアルタイム更新（insertされたら再取得）
+
         const ch = supabase
             .channel("applications_changes")
             .on(
@@ -78,7 +78,6 @@ export default function AdminDashboard() {
 
     const signOut = async () => {
         await supabase.auth.signOut();
-        // RequireAuth が /admin/login に戻してくれる
     };
     const categorized = docs.map((d) => ({
         ...d,
