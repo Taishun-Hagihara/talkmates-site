@@ -42,11 +42,27 @@ export default function Layout() {
             <main className="">
                 <Outlet />
             </main>
+            <footer className="mt-10 border-t border-slate-200 px-4 py-4">
+                <div className="mx-auto flex max-w-6xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-sm text-slate-600">
+                        made by 萩原大竣 <span className="text-blue-600"> / </span>taishun-hagihara
+                    </p>
 
-            <footer className="h-20 border-t border-slate-200 px-4 py-4 mt-10">
-                <p className="text-slate-600">made by 萩原大竣 <span className="text-blue-600"> / </span>taishun-hagihara</p>
-                <a className="ml-auto text-blue-500" href="https://taishun-portfolio.com/">ポートフォリオサイトへ↗︎</a>
+                    <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+
+                        <a
+                            className="text-sm font-medium text-blue-500 hover:text-blue-600"
+                            href="https://taishun-portfolio.com/"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            ポートフォリオサイトへ↗︎
+                        </a>
+
+                    </div>
+                </div>
             </footer>
+
         </div>
     );
 }

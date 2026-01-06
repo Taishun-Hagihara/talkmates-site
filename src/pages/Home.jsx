@@ -85,7 +85,7 @@ export default function Home() {
                                     {nextEvents.map((e) => (
                                         <div
                                             key={e.id}
-                                            className="snap-start shrink-0 w-[85%] sm:w-[360px] lg:w-[380px]"
+                                            className="snap-start shrink-0 w-[85%] sm:w-90 lg:w-95"
                                         >
                                             <Card e={e} />
                                         </div>
@@ -119,9 +119,7 @@ export default function Home() {
 
                     </div>
 
-                  
-
-            
+                
                     <div className="mt-5">
                       
                         <div className="w-13/15 mx-auto">
@@ -130,7 +128,7 @@ export default function Home() {
                                     {pastEvents.map((e) => (
                                         <div
                                             key={e.id}
-                                            className="snap-start shrink-0 w-[85%] sm:w-[360px] lg:w-[380px]"
+                                            className="snap-start shrink-0 w-[85%] sm:w-90 lg:w-95"
                                         >
                                             <Card e={e} />
                                         </div>
@@ -147,6 +145,23 @@ export default function Home() {
                     </div>
                 </section>
             </main>
+            <footer>
+                <div className="mt-15">
+                    <div className="w-13/15 mx-auto flex justify-between gap-3">
+                        <h3 className="text-1xl text-slate-800"><span className="text-green-600">幹部</span>ページはこちら</h3>
+                        <div>
+                            <Link
+                                to="/admin/login"
+                                className="inline-flex items-center justify-center rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition active:scale-[0.98] hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+                            >
+                                Staff Login
+                            </Link>
+
+                        </div>
+                    </div>
+                </div>
+        </footer>
+            
         </div>
     );
 }
