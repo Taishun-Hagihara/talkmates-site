@@ -2,20 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
+import Card from "../components/Card";
 
-function pickLang(lang, en, ja) {
-    return lang === "ja" && ja ? ja : en;
-}
-
-function coverUrl(cover_path) {
-    if (!cover_path) return "";
-    const { data } = supabase.storage.from("event-covers").getPublicUrl(cover_path);
-    return data?.publicUrl || "";
-}
 
 export default function Events() {
     const { lang } = useLang();
-    const [nextEvent, setNextEvent] = useState(null);
+    const [nextEvents, setNextEvents] = useState([]);
     const [pastEvents, setPastEvents] = useState([]);
     const [error, setError] = useState("");
 
@@ -29,8 +21,7 @@ export default function Events() {
                 .select("id,slug,starts_at,location,cover_path,title_en,title_ja,description_en,description_ja,apply_url")
                 .gte("starts_at", nowIso)
                 .order("starts_at", { ascending: true })
-                .limit(1)
-                .maybeSingle();
+                .limit(10);
 
             const pastRes = await supabase
                 .from("events")
@@ -39,81 +30,77 @@ export default function Events() {
                 .order("starts_at", { ascending: false })
                 .limit(24);
 
-            if (nextRes.error) return setError(nextRes.error.message);
-            if (pastRes.error) return setError(pastRes.error.message);
+            
 
-            setNextEvent(nextRes.data);
+            setNextEvents(nextRes.data ?? []);
+
             setPastEvents(pastRes.data ?? []);
         })();
     }, []);
 
-    const Card = ({ e }) => {
-        const title = pickLang(lang, e.title_en, e.title_ja);
-        const desc = pickLang(lang, e.description_en, e.description_ja);
-        const img = coverUrl(e.cover_path);
+//.lengthに関しては表示するものがあるかどうかということ
+    //.data：Supabaseの返す「データ本体」フィールド（Supabase仕様）
+    return (
+        <div className="mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6 lg:px-8">
+            <h1 className="mt-8 text-4xl font-bold tracking-tight text-slate-800">
+                {(lang === "ja") ? "イベント" : "Events"}
+            </h1>
 
-        return (
-            <Link
-                to={`/events/${e.slug}`}
-                className="block overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 no-underline"
-            >
-                {img ? (
-                    <img src={img} alt="" className="block h-45 w-full object-cover" />
+            <div className="mt-10">
+                <div className="flex items-end justify-between gap-3">
+                    <h2 className="text-3xl font-bold tracking-tight text-slate-800">
+                        {lang === "ja" ? (
+                            <span>
+                                <span className="text-green-600">次回</span>イベント・予約
+                            </span>
+                        ) : (
+                                <div><span className="text-green-600">Next</span>Event・reservation</div>
+                        )}
+                    </h2>
+                </div>
+
+                <div className="mt-3 h-px w-full bg-slate-200" />
+
+                {nextEvents.length ? (
+                    <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        {nextEvents.map((e) => (
+                            <Card key={e.id} e={e} />
+                        ))}
+                    </div>
                 ) : (
-                    <div className="h-45 w-full bg-slate-100" />
+                    <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-600">
+                        {lang === "ja" ? "準備中です。" : "Coming soon."}
+                    </div>
                 )}
 
-                <div className="p-3.5">
-                    <div className="text-sm text-slate-500">
-                        {new Date(e.starts_at).toLocaleDateString()}
+            </div>
+       
+
+
+            <div className="mt-20">
+                <h2 className="text-3xl font-bold tracking-tight text-slate-800">
+                    {lang === "ja" ? (
+                        <span>
+                            <span className="text-green-600">過去</span>イベント
+                        </span>
+                    ) : (
+                        "Past Events"
+                    )}
+                </h2>
+
+                <div className="mt-3 h-px w-full bg-slate-200" />
+
+                {pastEvents.length ? (
+                    <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {pastEvents.map((e) => (
+                            <Card key={e.id} e={e} />
+                        ))}
                     </div>
-                    <div className="mt-1.5 font-bold">{title}</div>
-                    {desc && (
-                        <div className="mt-1.5 text-sm text-slate-700">
-                            {desc.length > 90 ? desc.slice(0, 90) + "…" : desc}
-                        </div>
-                    )}
-                </div>
-            </Link>
-        );
-    };
-
-    return (
-        <div>
-            <h1 className="text-[3.2em] leading-[1.1]">{lang === "ja" ? "イベント" : "Events"}</h1>
-
-            {error && <p className="text-red-600">Error: {error}</p>}
-
-            <h2 className="mt-4.5 text-2xl font-semibold">
-                {lang === "ja" ? "次回イベント" : "Next Event"}
-            </h2>
-            {nextEvent ? (
-                <div className="mt-3 max-w-130">
-                    <Card e={nextEvent} />
-                    {nextEvent.apply_url && (
-                        <a
-                            href={nextEvent.apply_url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="mt-2.5 inline-block font-medium text-[#646cff] no-underline transition-colors hover:text-[#535bf2]"
-                        >
-                            {lang === "ja" ? "参加する" : "Apply"}
-                        </a>
-                    )}
-                </div>
-            ) : (
-                <p>{lang === "ja" ? "準備中です。" : "Coming soon."}</p>
-            )}
-
-            <h2 className="mt-7 text-2xl font-semibold">
-                {lang === "ja" ? "過去イベント" : "Past Events"}
-            </h2>
-
-            <div className="mt-3 grid gap-3.5 grid-cols-[repeat(auto-fill,minmax(260px,1fr))]">
-                {pastEvents.map((e) => (
-                    <Card key={e.id} e={e} />
-                ))}
+                ) : (<div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-600">
+                    {lang === "ja" ? "準備中です。" : "Coming soon."}
+                </div>)}
             </div>
         </div>
     );
+
 }
