@@ -55,7 +55,7 @@
 
 ### Backend / Database
 - Supabase（PostgreSQL / Auth / Storage）
-- Row Level Securityによる権限制御
+- 権限制御
 
 ### Infrastructure / Deploy
 - AWS S3（静的ホスティング）
