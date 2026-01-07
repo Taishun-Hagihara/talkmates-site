@@ -33,16 +33,10 @@
 
 ---
 
-## デモ画像
+## デモ画像 (Home / ログインページ / 幹部ページ)
 
-- Home
-- Events
-- Event Detail
-- Admin Login
-- Admin Dashboard（PDF一覧）
+![デモ](images/Demo.jpeg)
 
-（例）
-<!-- ![Home](docs/home.png) -->
 
 ---
 
