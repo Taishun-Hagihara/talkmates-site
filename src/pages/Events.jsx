@@ -9,11 +9,11 @@ export default function Events() {
     const { lang } = useLang();
     const [nextEvents, setNextEvents] = useState([]);
     const [pastEvents, setPastEvents] = useState([]);
-    const [error, setError] = useState("");
+
 
     useEffect(() => {
         (async () => {
-            setError("");
+            
             const nowIso = new Date().toISOString();
 
             const nextRes = await supabase
