@@ -38,7 +38,8 @@ export default function Home() {
 
     return (
         <div className="w-full">
-            <header className="w-13/15 mx-auto">
+
+            {lang=="ja" ? <header className="w-13/15 mx-auto">
                 <h1 className="text-slate-800 text-4xl mt-6 font-bold">
                     <span className="text-green-600">Talk</span>Mates
                 </h1>
@@ -52,14 +53,53 @@ export default function Home() {
                         instagramへ↗︎
                     </a>
                 </div>
-            </header>
-
-            <main className="w-full">
-                <div className="w-13/15 mx-auto">
+                <div className="">
                     <h2 className="text-slate-800 text-2xl mt-6 font-bold">TalkMatesとは？？</h2>
                     <p className="text-slate-800 mt-3">同志社大学登録団体サークルで、留学生の数が同志社No.1👑</p>
                     <p className="text-slate-800">英語が苦手な方でも大歓迎🥺</p>
                 </div>
+            </header> : <header className="w-13/15 mx-auto">
+                  <h1 className="text-slate-800 text-4xl mt-6 font-bold">
+                    <span className="text-green-600">Talk</span>Mates
+                  </h1>
+
+                  <p className="text-slate-800 text-2xl font-bold mt-6">Event Circle</p>
+                  <p className="text-slate-800 text-2xl font-bold">
+                    Let’s join activities with international students!
+                  </p>
+
+                  <div className="mt-6">
+                    <a
+                      href="https://www.instagram.com/talkmates_2025/"
+                      className="text-blue-500"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Go to Instagram ↗︎
+                    </a>
+                  </div>
+
+                  <div>
+                    <h2 className="text-slate-800 text-2xl mt-6 font-bold">
+                      What is TalkMates?
+                    </h2>
+                    <p className="text-slate-800 mt-3">
+                      We’re an officially registered circle at Doshisha University, and we have
+                      the largest number of international students on campus 👑
+                    </p>
+                    <p className="text-slate-800">
+                      Even if you’re not confident in English, you’re more than welcome 🥺
+                    </p>
+                  </div>
+                </header>
+
+            
+
+            }
+            
+
+            <main className="w-full">
+                
                 <section className="mt-10">
 
                     <div className="w-13/15 mx-auto flex items-end justify-between gap-3">
