@@ -20,7 +20,7 @@ function coverUrl(cover_path) {
 }
 
 
-
+//eには.dataが入ります。
 const Card = ({ e }) => {
     const { lang } = useLang();
     const title = pickLang(lang, e.title_en, e.title_ja);
