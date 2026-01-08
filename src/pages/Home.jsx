@@ -8,11 +8,11 @@ export default function Home() {
     const { lang } = useLang();
     const [nextEvents, setNextEvents] = useState([]);
     const [pastEvents, setPastEvents] = useState([]);
-    const [error, setError] = useState("");
+
 
     useEffect(() => {
         (async () => {
-            setError("");
+           
             const nowIso = new Date().toISOString();
 
             const nextRes = await supabase
@@ -29,8 +29,7 @@ export default function Home() {
                 .order("starts_at", { ascending: false })
                 .limit(10);
 
-            if (nextRes.error) return setError(nextRes.error.message);
-            if (res.error) return setError(res.error.message);
+            
             setNextEvents(nextRes.data ?? []);
             setPastEvents(res.data ?? []);
         })();
