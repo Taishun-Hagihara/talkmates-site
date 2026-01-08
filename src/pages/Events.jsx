@@ -1,5 +1,6 @@
+//理解済み
+//コード書いてて思ったのはHome.jsxと何ら変わらんのではないかと言うこと
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
 import Card from "../components/Card";
