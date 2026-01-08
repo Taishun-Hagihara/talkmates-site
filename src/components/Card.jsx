@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
@@ -9,7 +8,7 @@ import { useLang } from "../contexts/LangContext";
 
 
 function pickLang(lang, en, ja) {
-    return (lang === "ja") && ja ? ja : en;
+    return (lang === "ja") && (ja ? ja : en);
 }
 //coverUrl は 「Supabase Storage に保存されている画像のパス（cover_path）から、表示に使えるURL文字列を作って返す」 ための関数
 function coverUrl(cover_path) {
