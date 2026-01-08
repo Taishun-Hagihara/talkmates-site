@@ -1,3 +1,4 @@
+//理解済み
 import { Link, Outlet } from "react-router-dom";
 import { useLang } from "../contexts/LangContext";
 import TalkMatesLogo from "../assets/TalkMatesLogo.png";

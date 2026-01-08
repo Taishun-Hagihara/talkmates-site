@@ -1,3 +1,4 @@
+//supabaseについての理解が浅いと思ってる。
 
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
