@@ -39,7 +39,8 @@ export default function Home() {
     return (
         <div className="w-full">
 
-            {lang=="ja" ? <header className="w-13/15 mx-auto">
+            {lang=="ja" ? 
+            <header className="w-13/15 mx-auto">
                 <h1 className="text-slate-800 text-4xl mt-6 font-bold">
                     <span className="text-green-600">Talk</span>Mates
                 </h1>
