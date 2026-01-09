@@ -40,7 +40,7 @@ export default function Home() {
         <div className="w-full">
 
             {lang=="ja" ? 
-            <header className="w-13/15 mx-auto">
+            (<header className="w-13/15 mx-auto">
                 <h1 className="text-slate-800 text-4xl mt-6 font-bold">
                     <span className="text-green-600">Talk</span>Mates
                 </h1>
@@ -59,7 +59,7 @@ export default function Home() {
                     <p className="text-slate-800 mt-3">同志社大学登録団体サークルで、留学生の数が同志社No.1👑</p>
                     <p className="text-slate-800">英語が苦手な方でも大歓迎🥺</p>
                 </div>
-            </header> : <header className="w-13/15 mx-auto">
+            </header>) : (<header className="w-13/15 mx-auto">
                   <h1 className="text-slate-800 text-4xl mt-6 font-bold">
                     <span className="text-green-600">Talk</span>Mates
                   </h1>
@@ -92,7 +92,7 @@ export default function Home() {
                       Even if you’re not confident in English, you’re more than welcome 🥺
                     </p>
                   </div>
-                </header>
+                </header>)
 
             
 
