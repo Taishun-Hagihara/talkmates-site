@@ -1,24 +1,22 @@
+// Supabase Storage に保存された cover_path から公開 URL を作る
+// cover_path がなければ空文字を返す
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
 
-
-
-
-
-
 function pickLang(lang, en, ja) {
     return (lang === "ja") && (ja ? ja : en);
 }
-//coverUrl は 「Supabase Storage に保存されている画像のパス（cover_path）から、表示に使えるURL文字列を作って返す」 ための関数
+
+// coverUrl は Supabase Storage の event-covers から公開 URL を生成する関数
+// data があれば data.publicUrl、なければ undefined
 function coverUrl(cover_path) {
     if (!cover_path) return "";
     const { data } = supabase.storage.from("event-covers").getPublicUrl(cover_path);
     return data?.publicUrl || "";
 }
 
-
-
+// e には Supabase の行データが入る想定
 const Card = ({ e }) => {
     const { lang } = useLang();
     const title = pickLang(lang, e.title_en, e.title_ja);
@@ -30,10 +28,12 @@ const Card = ({ e }) => {
             to={`/events/${e.slug}`}
             className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
         >
-
             <div className="relative aspect-video w-full bg-slate-100 h-120">
-                <img src={img} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
-
+                <img
+                    src={img}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                />
             </div>
 
             <div className="p-4">
@@ -55,10 +55,6 @@ const Card = ({ e }) => {
             </div>
         </Link>
     );
-
 };
-
-
-
 
 export default Card;

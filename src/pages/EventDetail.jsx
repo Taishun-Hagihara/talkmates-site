@@ -1,3 +1,4 @@
+//理解済み
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -11,19 +12,18 @@ export default function EventDetail() {
     const { slug } = useParams();
     const { lang } = useLang();
     const [event, setEvent] = useState(null);
-    const [error, setError] = useState("");
+
 
     useEffect(() => {
         (async () => {
-            setError("");
-            const { data, error } = await supabase
+           
+            const { data} = await supabase
                 .from("events")
                 .select("slug,starts_at,location,cover_path,title_en,title_ja,description_en,description_ja,apply_url")
                 .eq("slug", slug)
                 .maybeSingle();
 
-            if (error) setError(error.message);
-            else setEvent(data);
+            setEvent(data);
         })();
     }, [slug]);
 
