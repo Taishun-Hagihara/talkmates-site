@@ -1,3 +1,4 @@
+//supabaseについての理解が浅いと思ってる。
 
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -12,6 +13,9 @@ function pickLang(lang, en, ja) {
     return (lang === "ja") && ja ? ja : en;
 }
 //coverUrl は 「Supabase Storage に保存されている画像のパス（cover_path）から、表示に使えるURL文字列を作って返す」 ための関数
+//cover_pathにはsupabaseで画像の情報を入れている。
+//supabaseのstorageのevent-coversからcover_path のファイルについて、公開URLを生成します。
+//data が存在すれば → data.publicUrl data がなければ → undefined
 function coverUrl(cover_path) {
     if (!cover_path) return "";
     const { data } = supabase.storage.from("event-covers").getPublicUrl(cover_path);
@@ -19,7 +23,7 @@ function coverUrl(cover_path) {
 }
 
 
-
+//eには.dataが入ります。
 const Card = ({ e }) => {
     const { lang } = useLang();
     const title = pickLang(lang, e.title_en, e.title_ja);
