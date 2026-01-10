@@ -1,4 +1,5 @@
 // ボチボチの感じだけど、螺旋的に学習が進んでいるとして一旦他のところを勉強する
+//propsの理解が浅いので、Contextの理解が浅いんやろなと思ってる
 import { createContext, useContext, useMemo, useState } from "react";
 
 const LangContext = createContext(null);

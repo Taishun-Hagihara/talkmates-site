@@ -17,6 +17,7 @@ function coverUrl(cover_path) {
 }
 
 // e には Supabase の行データが入る想定
+//以下のconst後の関数は上で定義してる
 const Card = ({ e }) => {
     const { lang } = useLang();
     const title = pickLang(lang, e.title_en, e.title_ja);
