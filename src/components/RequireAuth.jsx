@@ -1,4 +1,4 @@
-//Card.jsx同様supabaseの理解が浅い
+
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
