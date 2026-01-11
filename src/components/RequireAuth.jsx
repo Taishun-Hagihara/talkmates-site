@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
+//supabase.auth.getSession()
+//ログインしていれば sessionオブジェクト
+
 export default function RequireAuth({ children }) {
     const [loading, setLoading] = useState(true);
     const [session, setSession] = useState(null);
