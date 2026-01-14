@@ -145,7 +145,7 @@ export default function AdminDashboard() {
                         {!apps.length && (
                             <tr>
                                 <td className="px-4 py-6 text-slate-600" colSpan={5}>
-                                    まだ参加希望データがありません（Google Form運用中ならここは空でOK）
+                                    まだ参加希望データがありません（Google Form運用中なのでここは空で問題ない）
                                 </td>
                             </tr>
                         )}
