@@ -8,16 +8,18 @@ export default function AdminLogin() {
     const nav = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const [err, setErr] = useState("");
     const [loading, setLoading] = useState(false);
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        setErr("");
         setLoading(true);
 
         const { error } = await supabase.auth.signInWithPassword({ email, password });
 
         setLoading(false);
+        if (error) return setErr(error.message);
         
 
         nav("/admin", { replace: true });
