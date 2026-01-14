@@ -1,27 +1,28 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-
+//幹部用のログインページを作っている。
+//useNavigateはHooksの一つで画面遷移するためのもの。
+//つまり nav は、ざっくり言うとnav("/admin") で / admin に移動させる関数
 export default function AdminLogin() {
     const nav = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [err, setErr] = useState("");
+
     const [loading, setLoading] = useState(false);
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        setErr("");
         setLoading(true);
 
         const { error } = await supabase.auth.signInWithPassword({ email, password });
 
         setLoading(false);
-        if (error) return setErr(error.message);
+        
 
         nav("/admin", { replace: true });
     };
-
+//理解している
     return (
         <div className="mx-auto max-w-md px-4 py-10">
             <h1 className="text-2xl font-bold text-slate-900"><span className="text-green-600">Staff</span> Login</h1>
