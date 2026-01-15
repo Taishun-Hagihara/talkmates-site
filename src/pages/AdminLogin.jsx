@@ -10,6 +10,8 @@ export default function AdminLogin() {
     const [loading, setLoading] = useState(false);
 
     const onSubmit = async (e) => {
+        //formが自動でリロードして処理できなくなることを防ぐためにpreventDefault()
+        //preventDefaultはイベントの標準機能
         e.preventDefault();
         setErr("");
         setLoading(true);
@@ -21,11 +23,19 @@ export default function AdminLogin() {
 
         nav("/admin", { replace: true });
     };
-
+//errが""ならfalsy文字列が入っていればtruthy
+//formが submit されたときに onSubmit が実行されるそして、HTMLでは、formの中の button はデフォルトで type="submit" です。
+//ゆえにbuttonをクリックするとsubmitが発生する。
     return (
         <div className="mx-auto max-w-md px-4 py-10">
             <h1 className="text-2xl font-bold text-slate-900"><span className="text-green-600">Staff</span> Login</h1>
             <p className="mt-2 text-sm text-slate-600">幹部のみログインできます。</p>
+
+            {err && (
+              <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+                {err}
+              </p>
+            )}
 
             <form onSubmit={onSubmit} className="mt-6 space-y-4">
                 
@@ -63,4 +73,7 @@ export default function AdminLogin() {
             </form>
         </div>
     );
+    //awaitでデータを待っている間のみsetLoadingでloading=trueになるのでその間disabled=trueでボタンが押せなくなる
+    //disableの処理により多重クリック防止が実現する。
+    //そしてボタンでの表示が、三項演算子によりSigning in…に切り替わる。
 }
