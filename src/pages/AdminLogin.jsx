@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-
+//幹部用のログインページを作っている。
+//useNavigateはHooksの一つで画面遷移するためのもの。
+//つまり nav は、ざっくり言うとnav("/admin") で / admin に移動させる関数
 export default function AdminLogin() {
     const nav = useNavigate();
     const [email, setEmail] = useState("");
@@ -20,9 +22,13 @@ export default function AdminLogin() {
 
         setLoading(false);
         if (error) return setErr(error.message);
+        
 
         nav("/admin", { replace: true });
     };
+
+//理解している
+
 //errが""ならfalsy文字列が入っていればtruthy
 //formが submit されたときに onSubmit が実行されるそして、HTMLでは、formの中の button はデフォルトで type="submit" です。
 //ゆえにbuttonをクリックするとsubmitが発生する。

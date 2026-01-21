@@ -1,12 +1,9 @@
+//理解済み
 //supabaseについての理解が浅いと思ってる。
 
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
-
-
-
-
 
 
 function pickLang(lang, en, ja) {
