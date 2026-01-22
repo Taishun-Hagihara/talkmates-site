@@ -101,7 +101,7 @@ export default function Home() {
 
                             {!nextEvents.length && (
                                 <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-600">
-                                    {lang === "ja" ? "準備中です。" : "Coming soon."}
+                                    {lang === "ja" ? "読み込み中" : "Coming soon."}
                                 </div>
                             )}
                         </div>
@@ -148,7 +148,7 @@ export default function Home() {
 
                             {!pastEvents.length && (
                                 <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-600">
-                                    {lang === "ja" ? "準備中です。" : "Coming soon."}
+                                    {lang === "ja" ? "読み込み中" : "Coming soon."}
                                 </div>
                             )}
                         </div>
