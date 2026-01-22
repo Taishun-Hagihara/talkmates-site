@@ -39,33 +39,39 @@ export default function Home() {
     return (
         <div className="w-full">
             <header className="w-13/15 mx-auto">
-                <h1 className="text-slate-800 text-4xl mt-6 font-bold">
+                <h1 className="text-slate-800 text-5xl mt-6 font-bold">
                     <span className="text-green-600">Talk</span>Mates
                 </h1>
-                <p className="text-slate-800 text-2xl font-bold mt-6">イベントサークル</p>
-                <p className="text-slate-800 text-2xl font-bold">留学生と一緒に活動しよう！</p>
+                <p className="text-slate-800 text-2xl font-bold mt-6">{lang === "ja" ? "イベントサークル" : "Event circle"}</p>
+                <p className="text-slate-800 text-2xl font-bold">{lang === "ja" ? "留学生と一緒に活動しよう！" : "Let’s join activities with Japanese students!"}</p>
                 <div className="mt-6">
                     <a
                         href="https://www.instagram.com/talkmates_2025/"
                         className="text-blue-500"
                     >
-                        instagramへ↗︎
+                        instagram↗︎
                     </a>
                 </div>
             </header>
-
+               
+            
             <main className="w-full">
                 <div className="w-13/15 mx-auto">
-                    <h2 className="text-slate-800 text-2xl mt-6 font-bold">TalkMatesとは？？</h2>
-                    <p className="text-slate-800 mt-3">同志社大学登録団体サークルで、留学生の数が同志社No.1👑</p>
-                    <p className="text-slate-800">英語が苦手な方でも大歓迎🥺</p>
+                    <h2 className="text-slate-800 text-2xl mt-6 font-bold">{lang === "ja" ? "TalkMatesとは？？" : "What is TalkMates?"}</h2>
+                    <p className="text-slate-800 mt-3">{lang === "ja" ? "同志社大学登録団体サークルで、留学生の数が同志社No.1👑" :"We’re the Doshisha University registered club with the No.1 number of international students! 👑"}</p>
+                    <p className="text-slate-800">{lang === "ja" ? "英語が苦手な方でも大歓迎🥺" :"Even if you’re not confident in Japanese, you’re more than welcome! 🥺"}</p>
                 </div>
                 <section className="mt-10">
 
                     <div className="w-13/15 mx-auto flex items-end justify-between gap-3">
-                        <h2 className="text-slate-800 text-2xl font-bold">
-                            <span className="text-green-600">次回</span>イベント
-                        </h2>
+                        {lang ==="ja" ? 
+                            <h2 className="text-slate-800 text-2xl font-bold">
+                                <span className="text-green-600">次回</span>イベント
+                            </h2>:
+                            <h2 className="text-slate-800 text-4xl font-bold">
+                                <span className="text-green-600">Next</span>Event
+                            </h2>
+                        }
 
                         <Link
                             to="/events"
@@ -106,9 +112,13 @@ export default function Home() {
                 <section className="mt-10">
                     
                     <div className="w-13/15 mx-auto flex items-end justify-between gap-3">
-                        <h2 className="text-slate-800 text-2xl font-bold">
+                        {lang == "ja" ? <h2 className="text-slate-800 text-2xl font-bold">
                             <span className="text-green-600">イベント記録</span> 2025年
+                        </h2> : 
+                        <h2 className="text-slate-800 text-4xl font-bold">
+                                <span className="text-green-600">Event recap</span> 2025年
                         </h2>
+                        }
 
                         <Link
                             to="/events"
