@@ -10,7 +10,7 @@ export default function AdminLogin() {
     const [password, setPassword] = useState("");
     const [err, setErr] = useState("");
     const [loading, setLoading] = useState(false);
-
+//理解している
     const onSubmit = async (e) => {
         //formが自動でリロードして処理できなくなることを防ぐためにpreventDefault()
         //preventDefaultはイベントの標準機能
