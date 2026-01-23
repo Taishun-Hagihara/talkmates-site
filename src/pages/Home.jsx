@@ -42,7 +42,7 @@ export default function Home() {
                 <h1 className="text-slate-800 text-5xl mt-6 font-bold">
                     <span className="text-green-600">Talk</span>Mates
                 </h1>
-                <p className="text-slate-800 text-2xl font-bold mt-6">{lang === "ja" ? "イベントサークル" : "Event circle"}</p>
+                <p className="text-slate-800 text-2xl font-bold mt-6">{lang === "ja" ? "留学生とのイベントサークル" : "Event circle"}</p>
                 <p className="text-slate-800 text-2xl font-bold">{lang === "ja" ? "留学生と一緒に活動しよう！" : "Let’s join activities with Japanese students!"}</p>
                 <div className="mt-6">
                     <a
