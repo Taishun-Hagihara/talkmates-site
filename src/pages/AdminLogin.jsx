@@ -11,6 +11,8 @@ export default function AdminLogin() {
     const [err, setErr] = useState("");
     const [loading, setLoading] = useState(false);
 //理解している
+//eはsubmitイベントそのものを引数としている。
+
     const onSubmit = async (e) => {
         //formが自動でリロードして処理できなくなることを防ぐためにpreventDefault()
         //preventDefaultはイベントの標準機能
@@ -19,6 +21,10 @@ export default function AdminLogin() {
         setLoading(true);
 
         const { error } = await supabase.auth.signInWithPassword({ email, password });
+        // Supabaseの「JavaScript SDK（= supabase - js）」のメソッドです.supabase.auth.signInWithPassword(...) は 関数でありこれを用いて、
+        //Supabase Auth のサーバー（API）にHTTPリクエストを投げています
+        //この関数を呼ぶことでSupabase側で認証してくれる
+        //成功したらnullが入りerrorならそれに準じる値が入る。実際はAPIの説明によるとdataという値が返ってくるが、今回必要ではないので捨てている。
 
         setLoading(false);
         if (error) return setErr(error.message);
