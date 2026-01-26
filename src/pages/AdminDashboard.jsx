@@ -1,35 +1,19 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
+const PDF_BUCKET = "staff-pdfs";
+
+const getCategory = (filePath = "") => {
+    const s = filePath.toLowerCase();
+    if (s.includes("proposal")) return "proposal";
+    if (s.includes("report")) return "report";
+    return "other";
+};
+
 export default function AdminDashboard() {
-    const [apps, setApps] = useState([]);
-    const [error, setError] = useState("");
-    const [tab, setTab] = useState("all"); // all | proposal | report | other
-
-    const load = async () => {
-        setError("");
-        const { data, error } = await supabase
-            .from("applications")
-            .select("id,created_at,name,email,grade,message,event_id")
-            .order("created_at", { ascending: false })
-            .limit(200);
-
-        if (error) return setError(error.message);
-        setApps(data ?? []);
-    };
-
-    const PDF_BUCKET = "staff-pdfs";
-    const getCategory = (filePath = "") => {
-        const s = filePath.toLowerCase();
-        if (s.includes("proposal")) return "proposal";
-        if (s.includes("report")) return "report";
-        return "other";
-    };
-
-
-
     const [docs, setDocs] = useState([]);
     const [docErr, setDocErr] = useState("");
+    const [tab, setTab] = useState("all");
 
     const loadDocs = async () => {
         setDocErr("");
@@ -46,39 +30,20 @@ export default function AdminDashboard() {
     const openPdf = async (file_path) => {
         const { data, error } = await supabase.storage
             .from(PDF_BUCKET)
-            .createSignedUrl(file_path, 60); // 60秒有効
+            .createSignedUrl(file_path, 60);
 
         if (error) return alert(error.message);
         window.open(data.signedUrl, "_blank", "noreferrer");
+    };
+
+    const signOut = async () => {
+        await supabase.auth.signOut();
     };
 
     useEffect(() => {
         loadDocs();
     }, []);
 
-
-
-    useEffect(() => {
-        load();
-
-
-        const ch = supabase
-            .channel("applications_changes")
-            .on(
-                "postgres_changes",
-                { event: "INSERT", schema: "public", table: "applications" },
-                () => load()
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(ch);
-        };
-    }, []);
-
-    const signOut = async () => {
-        await supabase.auth.signOut();
-    };
     const categorized = docs.map((d) => ({
         ...d,
         _cat: getCategory(d.file_path),
@@ -94,9 +59,8 @@ export default function AdminDashboard() {
     const filteredDocs =
         tab === "all" ? categorized : categorized.filter((d) => d._cat === tab);
 
-
     return (
-        <div className="mx-auto max-w-5xl px-4 py-10 ">
+        <div className="mx-auto max-w-5xl px-4 py-10">
             <div className="flex items-center justify-between gap-3">
                 <h1 className="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
                 <button
@@ -109,13 +73,6 @@ export default function AdminDashboard() {
                     Logout
                 </button>
             </div>
-
-            {error && (
-                <div className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                    {error}
-                </div>
-            )}
-
 
             <section className="mt-8">
                 <div className="flex items-end justify-between">
@@ -135,10 +92,11 @@ export default function AdminDashboard() {
                         <button
                             key={t.key}
                             onClick={() => setTab(t.key)}
-                            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${tab === t.key
+                            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                tab === t.key
                                     ? "bg-green-600 text-white"
                                     : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-                                }`}
+                            }`}
                         >
                             {t.label}
                         </button>
@@ -182,8 +140,6 @@ export default function AdminDashboard() {
                     </ul>
                 </div>
             </section>
-
-
         </div>
     );
 }
