@@ -222,7 +222,7 @@ export default function EventDetail() {
 
       {/* Cover image (タイトルの上に表示) */}
       <div className="mt-6 overflow-hidden rounded-3xl bg-slate-100 ring-1 ring-slate-200/70">
-        <div className="relative aspect-[16/9] w-full">
+        <div className="relative aspect-video w-full">
           {img ? (
             <img
               src={img}
@@ -309,17 +309,15 @@ export default function EventDetail() {
         </h2>
 
         <div className="mt-4 space-y-4 text-slate-700">
-          {/* 日本語・英語を両方表示（画像に寄せる） */}
-          {descJa && (
-            <p className="whitespace-pre-wrap leading-relaxed">
-              {descJa}
-            </p>
-          )}
-          {descEn && (
-            <p className="whitespace-pre-wrap leading-relaxed text-slate-600">
-              {descEn}
-            </p>
-          )}
+          {lang === "ja" ? <p className="whitespace-pre-wrap leading-relaxed">
+            {descJa}
+          </p> : <p className="whitespace-pre-wrap leading-relaxed text-slate-600">
+            {descEn}
+          </p> }
+        </div>
+
+        <div className="mt-4 space-y-4 text-slate-700">
+
           {!descJa && !descEn && (
             <p className="text-slate-500">
               {lang === "ja" ? "詳細は準備中です。" : "Details coming soon."}
