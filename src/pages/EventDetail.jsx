@@ -1,34 +1,177 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
-import { Badge, Button, Panel, EmptyState } from "../components/ui";
-import { CalendarDays, MapPin, ArrowLeft } from "lucide-react";
+import { CalendarDays, MapPin, Users, ArrowLeft } from "lucide-react";
 
 function pickLang(lang, en, ja) {
   return lang === "ja" && ja ? ja : en;
 }
 
+function coverUrl(cover_path) {
+  if (!cover_path) return "";
+  const { data } = supabase.storage.from("event-covers").getPublicUrl(cover_path);
+  return data?.publicUrl || "";
+}
+
+function formatDateTime(lang, iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  // 画像に寄せて「2024/4/15 18:00:00」風
+  return d.toLocaleString(lang === "ja" ? "ja-JP" : "en-US", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+
 export default function EventDetail() {
   const { slug } = useParams();
   const { lang } = useLang();
+
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [count, setCount] = useState(null); // 参加者数
+  const [countLoading, setCountLoading] = useState(false);
+  const [countErr, setCountErr] = useState("");
+
   useEffect(() => {
+    let cancelled = false;
+
     (async () => {
       setLoading(true);
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("events")
-        .select("slug,starts_at,location,cover_path,title_en,title_ja,description_en,description_ja,capacity")
+        // ★ count取得に event.id が必要
+        .select(
+          "id,slug,starts_at,location,cover_path,title_en,title_ja,description_en,description_ja,capacity"
+        )
         .eq("slug", slug)
         .maybeSingle();
+
+      if (cancelled) return;
+
+      if (error) {
+        setEvent(null);
+        setLoading(false);
+        return;
+      }
 
       setEvent(data ?? null);
       setLoading(false);
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
+
+  // 参加者数を取得（capacity が null の場合は不要）
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      setCountErr("");
+      setCount(null);
+
+      if (!event?.id) return;
+      if (event.capacity === null) return;
+
+      setCountLoading(true);
+
+      const { count: c, error } = await supabase
+        .from("event_registrations")
+        .select("id", { count: "exact", head: true })
+        .eq("event_id", event.id);
+
+      if (cancelled) return;
+
+      setCountLoading(false);
+
+      if (error) {
+        setCountErr(error.message);
+        return;
+      }
+      setCount(c ?? 0);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [event?.id, event?.capacity]);
+
+  const isEnded = useMemo(() => {
+    if (!event?.starts_at) return false;
+    const start = new Date(event.starts_at);
+    if (Number.isNaN(start.getTime())) return false;
+    return start < new Date();
+  }, [event?.starts_at]);
+
+  const img = event?.cover_path ? coverUrl(event.cover_path) : "";
+  const dateText = event?.starts_at ? formatDateTime(lang, event.starts_at) : "";
+
+  const titleMain =
+    lang === "ja" ? (event?.title_ja || event?.title_en) : (event?.title_en || event?.title_ja);
+  const titleSub =
+    lang === "ja" ? event?.title_en : event?.title_ja;
+
+  const descJa = event?.description_ja || "";
+  const descEn = event?.description_en || "";
+
+  const status = useMemo(() => {
+    if (!event) return null;
+
+    if (isEnded) {
+      return {
+        label: lang === "ja" ? "終了" : "Ended",
+        pill: "bg-blue-100 text-blue-700 border border-blue-200",
+        button: "bg-blue-600 hover:bg-blue-700 focus-visible:ring-blue-600",
+        disableRegister: true,
+      };
+    }
+
+    if (event.capacity === null) {
+      return {
+        label: lang === "ja" ? "受付中" : "Open",
+        pill: "bg-green-100 text-green-700 border border-green-200",
+        button: "bg-green-600 hover:bg-green-700 focus-visible:ring-green-600",
+        disableRegister: false,
+      };
+    }
+
+    // capacity あり
+    if (countLoading || count === null) {
+      return {
+        label: lang === "ja" ? "席数確認中" : "Checking seats",
+        pill: "bg-slate-100 text-slate-700 border border-slate-200",
+        button: "bg-green-600 hover:bg-green-700 focus-visible:ring-green-600",
+        disableRegister: true, // 数が確定するまで押せないように
+      };
+    }
+
+    const remaining = Math.max(event.capacity - count, 0);
+
+    if (remaining <= 0) {
+      return {
+        label: lang === "ja" ? "満員" : "Full",
+        pill: "bg-red-100 text-red-700 border border-red-200",
+        button: "bg-green-600 hover:bg-green-700 focus-visible:ring-green-600",
+        disableRegister: true,
+      };
+    }
+
+    return {
+      label: lang === "ja" ? `残り${remaining}席` : `${remaining} seats left`,
+      pill: "bg-green-100 text-green-700 border border-green-200",
+      button: "bg-green-600 hover:bg-green-700 focus-visible:ring-green-600",
+      disableRegister: false,
+    };
+  }, [event, isEnded, lang, countLoading, count]);
 
   if (loading) {
     return (
@@ -41,65 +184,52 @@ export default function EventDetail() {
   if (!event) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-12">
-        <EmptyState
-          title={lang === "ja" ? "イベントが見つかりません" : "Event not found"}
-          description={lang === "ja" ? "URLを確認してください。" : "Please check the URL."}
-          action={
-            <Link to="/events">
-              <Button variant="primary">{lang === "ja" ? "イベント一覧へ" : "Back to events"}</Button>
-            </Link>
-          }
-        />
+        <p className="text-slate-800 font-bold text-xl">
+          {lang === "ja" ? "イベントが見つかりません" : "Event not found"}
+        </p>
+        <p className="mt-2 text-slate-600">
+          {lang === "ja" ? "URLを確認してください。" : "Please check the URL."}
+        </p>
+        <Link
+          to="/events"
+          className="mt-6 inline-flex items-center justify-center rounded-2xl bg-green-600 px-6 py-3 font-bold text-white hover:bg-green-700"
+        >
+          {lang === "ja" ? "イベント一覧へ" : "Back to events"}
+        </Link>
       </div>
     );
   }
 
-  const title = pickLang(lang, event.title_en, event.title_ja);
-  const desc = pickLang(lang, event.description_en, event.description_ja);
-  const img = event.cover_path
-    ? supabase.storage.from("event-covers").getPublicUrl(event.cover_path).data.publicUrl
-    : "";
-
-  const dateText = new Date(event.starts_at).toLocaleString(lang === "ja" ? "ja-JP" : "en-US", {
-    dateStyle: "full",
-    timeStyle: "short",
-  });
+  const capacityText =
+    event.capacity === null
+      ? "-"
+      : (countLoading || count === null)
+        ? (lang === "ja" ? "確認中…" : "Loading…")
+        : `${count} / ${event.capacity}名`;
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 pb-14 sm:px-6 lg:px-8">
-      <div className="mt-10">
-        <Link to="/events" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900">
+    <div className="mx-auto w-full max-w-4xl px-4 pb-16 sm:px-6 lg:px-8">
+      {/* Back */}
+      <div className="pt-8">
+        <Link
+          to="/events"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900"
+        >
           <ArrowLeft className="h-4 w-4" />
           {lang === "ja" ? "イベント一覧に戻る" : "Back to events"}
         </Link>
-
-        <h1 className="mt-4 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
-          {title}
-        </h1>
-
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <Badge variant="neutral">
-            <CalendarDays className="h-3.5 w-3.5" />
-            {dateText}
-          </Badge>
-          {event.location && (
-            <Badge variant="neutral">
-              <MapPin className="h-3.5 w-3.5" />
-              {event.location}
-            </Badge>
-          )}
-          {event.capacity !== null && (
-            <Badge variant="info">
-              {lang === "ja" ? "定員" : "Capacity"}: {event.capacity}
-            </Badge>
-          )}
-        </div>
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-2xl border-2 border-slate-100 bg-slate-100">
+      {/* Cover image (タイトルの上に表示) */}
+      <div className="mt-6 overflow-hidden rounded-3xl bg-slate-100 ring-1 ring-slate-200/70">
         <div className="relative aspect-[16/9] w-full">
           {img ? (
-            <img src={img} alt="" className="absolute inset-0 h-full w-full object-cover" />
+            <img
+              src={img}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
+            />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-slate-500">
               No Image
@@ -108,18 +238,121 @@ export default function EventDetail() {
         </div>
       </div>
 
-      <Panel className="mt-6 p-6">
-        <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-slate-800">
-          {desc}
-        </p>
-      </Panel>
-
+      {/* Status + Title */}
       <div className="mt-6">
-        <Link to={`/events/${event.slug}/register`}>
-          <Button variant="primary" size="lg">
-            {lang === "ja" ? "参加する" : "Register"}
-          </Button>
+        {status && (
+          <div className="mb-4">
+            <span className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-bold ${status.pill}`}>
+              {status.label}
+            </span>
+          </div>
+        )}
+
+        <h1 className="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
+          {titleMain}
+        </h1>
+
+        {titleSub && (
+          <p className="mt-2 text-lg font-semibold text-slate-500">
+            {titleSub}
+          </p>
+        )}
+      </div>
+
+      {/* Info panel (日時/場所/定員) */}
+      <div className="mt-6 rounded-3xl bg-slate-50 p-6 ring-1 ring-slate-200/70">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {/* 開催日時 */}
+          <div>
+            <p className="text-sm font-bold text-slate-500">
+              {lang === "ja" ? "開催日時" : "Date & Time"}
+            </p>
+            <div className="mt-2 flex items-center gap-3 text-slate-900">
+              <CalendarDays className="h-5 w-5 text-green-600" />
+              <p className="font-bold">{dateText}</p>
+            </div>
+          </div>
+
+          {/* 場所 */}
+          <div>
+            <p className="text-sm font-bold text-slate-500">
+              {lang === "ja" ? "場所" : "Location"}
+            </p>
+            <div className="mt-2 flex items-center gap-3 text-slate-900">
+              <MapPin className="h-5 w-5 text-green-600" />
+              <p className="font-bold">{event.location || "-"}</p>
+            </div>
+          </div>
+
+          {/* 定員 */}
+          {event.capacity !== null && (
+            <div>
+              <p className="text-sm font-bold text-slate-500">
+                {lang === "ja" ? "定員" : "Capacity"}
+              </p>
+              <div className="mt-2 flex items-center gap-3 text-slate-900">
+                <Users className="h-5 w-5 text-green-600" />
+                <p className="font-bold">{capacityText}</p>
+              </div>
+              {countErr && (
+                <p className="mt-2 text-sm text-red-600">{countErr}</p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Details */}
+      <div className="mt-10">
+        <h2 className="text-2xl font-black text-slate-900">
+          {lang === "ja" ? "イベント詳細" : "Event Details"}
+        </h2>
+
+        <div className="mt-4 space-y-4 text-slate-700">
+          {/* 日本語・英語を両方表示（画像に寄せる） */}
+          {descJa && (
+            <p className="whitespace-pre-wrap leading-relaxed">
+              {descJa}
+            </p>
+          )}
+          {descEn && (
+            <p className="whitespace-pre-wrap leading-relaxed text-slate-600">
+              {descEn}
+            </p>
+          )}
+          {!descJa && !descEn && (
+            <p className="text-slate-500">
+              {lang === "ja" ? "詳細は準備中です。" : "Details coming soon."}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Register button */}
+      <div className="mt-10">
+        <Link
+          to={status?.disableRegister ? "#" : `/events/${event.slug}/register`}
+          onClick={(e) => {
+            if (status?.disableRegister) e.preventDefault();
+          }}
+          className={[
+            "inline-flex w-full items-center justify-center rounded-2xl px-6 py-5 text-lg font-black text-white shadow-sm transition-colors",
+            status?.disableRegister
+              ? "bg-slate-300 cursor-not-allowed"
+              : status?.button || "bg-green-600 hover:bg-green-700",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+          ].join(" ")}
+        >
+          {lang === "ja" ? "このイベントに参加する" : "Join this event"}
         </Link>
+
+        {status?.disableRegister && (
+          <p className="mt-3 text-center text-sm font-semibold text-slate-500">
+            {isEnded
+              ? (lang === "ja" ? "このイベントは終了しました。" : "This event has ended.")
+              : (lang === "ja" ? "現在参加登録できません。" : "Registration is not available now.")}
+          </p>
+        )}
       </div>
     </div>
   );

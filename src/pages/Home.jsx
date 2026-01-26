@@ -5,6 +5,8 @@ import { supabase } from "../lib/supabase";
 import Card from "../components/Card";
 import { Button, Panel, EmptyState } from "../components/ui";
 import { Instagram, CalendarDays, Users } from "lucide-react";
+import StaffLoginCard from "../components/StaffLoginCard";
+
 
 export default function Home() {
   const { lang } = useLang();
@@ -19,14 +21,14 @@ export default function Home() {
 
       const nextRes = await supabase
         .from("events")
-        .select("id,slug,starts_at,location,cover_path,title_en,title_ja,description_en,description_ja")
+        .select("id,slug,starts_at,location,cover_path,capacity,title_en,title_ja,description_en,description_ja")
         .gte("starts_at", nowIso)
         .order("starts_at", { ascending: true })
         .limit(10);
 
       const pastRes = await supabase
         .from("events")
-        .select("id,slug,starts_at,location,cover_path,title_en,title_ja,description_en,description_ja")
+        .select("id,slug,starts_at,location,cover_path,capacity,title_en,title_ja,description_en,description_ja")
         .lt("starts_at", nowIso)
         .order("starts_at", { ascending: false })
         .limit(12);
@@ -40,11 +42,11 @@ export default function Home() {
   return (
     <div>
       {/* HERO */}
-      <section className="bg-gradient-to-br from-green-600 via-emerald-500 to-lime-400">
+      <section className="bg-linear-to-br from-green-600 via-emerald-500 to-lime-400">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:py-16">
           <div className="max-w-3xl">
             <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl">
-              <span className="text-slate-900">Talk</span>Mates
+              TalkMates
             </h1>
             <p className="mt-4 text-lg font-semibold text-white/95">
               {lang === "ja"
@@ -74,32 +76,36 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            <Panel className="p-5 bg-white/95">
-              <div className="text-sm font-bold text-slate-900">
-                {lang === "ja" ? "留学生の数 同志社No.1" : "No.1 international students"}
-              </div>
-              <div className="mt-1 text-sm text-slate-600">
-                {lang === "ja" ? "登録団体として活動しています" : "Officially registered club"}
-              </div>
-            </Panel>
-            <Panel className="p-5 bg-white/95">
-              <div className="text-sm font-bold text-slate-900">
-                {lang === "ja" ? "初心者でも安心" : "Beginner-friendly"}
-              </div>
-              <div className="mt-1 text-sm text-slate-600">
-                {lang === "ja" ? "英語が苦手でも大歓迎" : "Even if you're not confident, welcome!"}
-              </div>
-            </Panel>
-            <Panel className="p-5 bg-white/95">
-              <div className="text-sm font-bold text-slate-900">
-                {lang === "ja" ? "交流イベント多数" : "Many events"}
-              </div>
-              <div className="mt-1 text-sm text-slate-600">
-                {lang === "ja" ? "毎月いろんな企画を実施" : "Various activities every month"}
-              </div>
-            </Panel>
-          </div>
+          
+        </div>
+      </section>
+      <section>
+        <h1 className="mt-5 text-center text-4xl text-black font-bold">About Talk mates</h1>
+        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          <Panel className="p-5 bg-white/95">
+            <div className="text-sm font-bold text-slate-900">
+              {lang === "ja" ? "留学生の数 同志社No.1" : "No.1 international students"}
+            </div>
+            <div className="mt-1 text-sm text-slate-600">
+              {lang === "ja" ? "登録団体として活動しています" : "Officially registered club"}
+            </div>
+          </Panel>
+          <Panel className="p-5 bg-white/95">
+            <div className="text-sm font-bold text-slate-900">
+              {lang === "ja" ? "初心者でも安心" : "Beginner-friendly"}
+            </div>
+            <div className="mt-1 text-sm text-slate-600">
+              {lang === "ja" ? "英語が苦手でも大歓迎" : "Even if you're not confident, welcome!"}
+            </div>
+          </Panel>
+          <Panel className="p-5 bg-white/95">
+            <div className="text-sm font-bold text-slate-900">
+              {lang === "ja" ? "交流イベント多数" : "Many events"}
+            </div>
+            <div className="mt-1 text-sm text-slate-600">
+              {lang === "ja" ? "毎月いろんな企画を実施" : "Various activities every month"}
+            </div>
+          </Panel>
         </div>
       </section>
 
@@ -182,6 +188,8 @@ export default function Home() {
           </div>
         )}
       </section>
+      <StaffLoginCard />
+
     </div>
   );
 }
