@@ -124,7 +124,7 @@ export default function Card({ e }) {
       to={`/events/${e.slug}`}
       className="group block overflow-hidden rounded-3xl bg-white shadow-lg shadow-slate-200/50 ring-1 ring-slate-200/70 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
     >
-      <div className="relative w-full aspect-[16/9] bg-slate-100 overflow-hidden">
+      <div className="relative w-full aspect-video bg-slate-100 overflow-hidden">
         {img ? (
           <img
             src={img}
