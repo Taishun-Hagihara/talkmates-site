@@ -97,18 +97,15 @@ export default function AdminDashboard() {
 
     return (
         <div className="mx-auto max-w-5xl px-4 py-10 ">
-            <div className="flex items-end justify-between gap-3 ">
-
-                
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Admin</h1>
-                    <p className="mt-1 text-sm text-slate-600">参加希望（applications）一覧</p>
-                </div>
-
+            <div className="flex items-center justify-between gap-3">
+                <h1 className="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
                 <button
                     onClick={signOut}
-                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm transition hover:bg-slate-100 hover:text-slate-800"
                 >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
                     Logout
                 </button>
             </div>
@@ -119,39 +116,7 @@ export default function AdminDashboard() {
                 </div>
             )}
 
-            <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200">
-                <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-50 text-slate-600">
-                        <tr>
-                            <th className="px-4 py-3">Time</th>
-                            <th className="px-4 py-3">Name</th>
-                            <th className="px-4 py-3">Email</th>
-                            <th className="px-4 py-3">Grade</th>
-                            <th className="px-4 py-3">Message</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200">
-                        {apps.map((a) => (
-                            <tr key={a.id} className="text-slate-800">
-                                <td className="px-4 py-3 whitespace-nowrap">
-                                    {new Date(a.created_at).toLocaleString()}
-                                </td>
-                                <td className="px-4 py-3">{a.name}</td>
-                                <td className="px-4 py-3">{a.email || "-"}</td>
-                                <td className="px-4 py-3">{a.grade || "-"}</td>
-                                <td className="px-4 py-3">{a.message || "-"}</td>
-                            </tr>
-                        ))}
-                        {!apps.length && (
-                            <tr>
-                                <td className="px-4 py-6 text-slate-600" colSpan={5}>
-                                    まだ参加希望データがありません（Google Form運用中ならここは空でOK）
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+
             <section className="mt-8">
                 <div className="flex items-end justify-between">
                     <div>
