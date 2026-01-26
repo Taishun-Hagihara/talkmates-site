@@ -1,6 +1,6 @@
 //理解済み
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
 
@@ -79,18 +79,14 @@ export default function EventDetail() {
             </div>
             
 
-            {event.apply_url && (
-                <div className="mt-6 flex flex-wrap gap-3">
-                    <a
-                        href={event.apply_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-[#646cff] shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-[#535bf2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-                    >
-                        {lang === "ja" ? "参加する" : "Apply"}
-                    </a>
-                </div>
-            )}
+            <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                    to={`/events/${event.slug}/register`}
+                    className="inline-flex items-center justify-center rounded-full bg-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+                >
+                    {lang === "ja" ? "参加する" : "Register"}
+                </Link>
+            </div>
         </div>
     );
 

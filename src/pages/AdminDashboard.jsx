@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 const PDF_BUCKET = "staff-pdfs";
@@ -14,6 +15,40 @@ export default function AdminDashboard() {
     const [docs, setDocs] = useState([]);
     const [docErr, setDocErr] = useState("");
     const [tab, setTab] = useState("all");
+
+    // イベント一覧
+    const [events, setEvents] = useState([]);
+    const [eventsErr, setEventsErr] = useState("");
+    const [registrationCounts, setRegistrationCounts] = useState({});
+
+    const loadEvents = async () => {
+        setEventsErr("");
+
+        // イベント一覧取得（新しい順）
+        const { data, error } = await supabase
+            .from("events")
+            .select("id,slug,title_ja,title_en,capacity,starts_at")
+            .order("starts_at", { ascending: false })
+            .limit(50);
+
+        if (error) {
+            setEventsErr(error.message);
+            return;
+        }
+
+        setEvents(data ?? []);
+
+        // 各イベントの参加者数を取得
+        const counts = {};
+        for (const ev of data ?? []) {
+            const { count } = await supabase
+                .from("event_registrations")
+                .select("*", { count: "exact", head: true })
+                .eq("event_id", ev.id);
+            counts[ev.id] = count || 0;
+        }
+        setRegistrationCounts(counts);
+    };
 
     const loadDocs = async () => {
         setDocErr("");
@@ -42,6 +77,7 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         loadDocs();
+        loadEvents();
     }, []);
 
     const categorized = docs.map((d) => ({
@@ -74,6 +110,92 @@ export default function AdminDashboard() {
                 </button>
             </div>
 
+            {/* イベント参加者管理セクション */}
+            <section className="mt-8">
+                <div className="flex items-end justify-between">
+                    <div>
+                        <h2 className="text-lg font-bold text-slate-900">イベント参加者</h2>
+                        <p className="mt-1 text-sm text-slate-600">各イベントの参加者一覧を確認</p>
+                    </div>
+                </div>
+
+                {eventsErr && (
+                    <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {eventsErr}
+                    </div>
+                )}
+
+                {/* これからのイベント */}
+                {(() => {
+                    const now = new Date();
+                    const upcomingEvents = events
+                        .filter((ev) => new Date(ev.starts_at) >= now)
+                        .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
+                    const pastEvents = events
+                        .filter((ev) => new Date(ev.starts_at) < now)
+                        .sort((a, b) => new Date(b.starts_at) - new Date(a.starts_at));
+
+                    const renderEventList = (eventList, emptyMessage) => (
+                        <div className="overflow-hidden rounded-2xl border border-slate-200">
+                            <ul className="divide-y divide-slate-200">
+                                {eventList.map((ev) => {
+                                    const count = registrationCounts[ev.id] ?? 0;
+                                    const isFull = ev.capacity !== null && count >= ev.capacity;
+
+                                    return (
+                                        <li key={ev.id} className="flex items-center justify-between gap-3 px-4 py-3">
+                                            <div className="min-w-0">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <p className="truncate font-medium text-slate-900">
+                                                        {ev.title_ja || ev.title_en}
+                                                    </p>
+                                                    <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                                                        isFull
+                                                            ? "bg-red-100 text-red-700"
+                                                            : "bg-green-100 text-green-700"
+                                                    }`}>
+                                                        {count} / {ev.capacity ?? "∞"}
+                                                    </span>
+                                                </div>
+                                                <p className="mt-0.5 text-xs text-slate-500">
+                                                    {new Date(ev.starts_at).toLocaleString()}
+                                                </p>
+                                            </div>
+
+                                            <Link
+                                                to={`/admin/events/${ev.id}/registrations`}
+                                                className="shrink-0 rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                                            >
+                                                参加者を見る
+                                            </Link>
+                                        </li>
+                                    );
+                                })}
+
+                                {!eventList.length && (
+                                    <li className="px-4 py-6 text-sm text-slate-600">{emptyMessage}</li>
+                                )}
+                            </ul>
+                        </div>
+                    );
+
+                    return (
+                        <>
+                            <div className="mt-6">
+                                <h3 className="mb-3 text-sm font-semibold text-slate-700">これからのイベント</h3>
+                                {renderEventList(upcomingEvents, "予定されているイベントがありません。")}
+                            </div>
+
+                            <div className="mt-6">
+                                <h3 className="mb-3 text-sm font-semibold text-slate-700">過去のイベント</h3>
+                                {renderEventList(pastEvents, "過去のイベントがありません。")}
+                            </div>
+                        </>
+                    );
+                })()}
+            </section>
+
+            {/* PDF管理セクション */}
             <section className="mt-8">
                 <div className="flex items-end justify-between">
                     <div>
