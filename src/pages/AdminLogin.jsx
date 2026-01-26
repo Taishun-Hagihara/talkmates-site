@@ -1,92 +1,77 @@
-//理解済み
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-//幹部用のログインページを作っている。
-//useNavigateはHooksの一つで画面遷移するためのもの。
-//つまり nav は、ざっくり言うとnav("/admin") で / admin に移動させる関数
+import TalkMatesLogo from "../assets/TalkMatesLogo.png";
+import { Alert, Button, Input, Panel } from "../components/ui";
+import { Mail, Lock, ArrowLeft } from "lucide-react";
+
 export default function AdminLogin() {
-    const nav = useNavigate();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [err, setErr] = useState("");
-    const [loading, setLoading] = useState(false);
-//理解している
-//eはsubmitイベントそのものを引数としている。
+  const nav = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const onSubmit = async (e) => {
-        //formが自動でリロードして処理できなくなることを防ぐためにpreventDefault()
-        //preventDefaultはイベントの標準機能
-        e.preventDefault();
-        setErr("");
-        setLoading(true);
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setErr("");
+    setLoading(true);
 
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        // Supabaseの「JavaScript SDK（= supabase - js）」のメソッドです.supabase.auth.signInWithPassword(...) は 関数でありこれを用いて、
-        //Supabase Auth のサーバー（API）にHTTPリクエストを投げています
-        //この関数を呼ぶことでSupabase側で認証してくれる
-        //成功したらnullが入りerrorならそれに準じる値が入る。実際はAPIの説明によるとdataという値が返ってくるが、今回必要ではないので捨てている。
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-        setLoading(false);
-        if (error) return setErr(error.message);
-        
+    setLoading(false);
+    if (error) return setErr(error.message);
 
-        nav("/admin", { replace: true });
-    };
+    nav("/admin", { replace: true });
+  };
 
-//理解している
+  return (
+    <div className="min-h-[calc(100vh-80px)] px-4 py-12">
+      <div className="mx-auto max-w-md">
+        <Link to="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900">
+          <ArrowLeft className="h-4 w-4" />
+          Home
+        </Link>
 
-//errが""ならfalsy文字列が入っていればtruthy
-//formが submit されたときに onSubmit が実行されるそして、HTMLでは、formの中の button はデフォルトで type="submit" です。
-//ゆえにbuttonをクリックするとsubmitが発生する。
-    return (
-        <div className="mx-auto max-w-md px-4 py-10">
-            <h1 className="text-2xl font-bold text-slate-900"><span className="text-green-600">Staff</span> Login</h1>
-            <p className="mt-2 text-sm text-slate-600">幹部のみログインできます。</p>
+        <Panel className="mt-4 p-8">
+          <div className="flex items-center gap-3">
+            <img src={TalkMatesLogo} alt="TalkMates" className="h-10 w-10 rounded-2xl" />
+            <div>
+              <h1 className="text-xl font-black tracking-tight text-slate-900">
+                <span className="text-green-600">Staff</span> Login
+              </h1>
+              <p className="text-sm text-slate-600">幹部のみログインできます。</p>
+            </div>
+          </div>
 
-            {err && (
-              <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
-                {err}
-              </p>
-            )}
+          {err && <Alert variant="error" className="mt-4">{err}</Alert>}
 
-            <form onSubmit={onSubmit} className="mt-6 space-y-4">
-                
+          <form onSubmit={onSubmit} className="mt-6 grid gap-4">
+            <Input
+              label="メールアドレス"
+              value={email}
+              onChange={setEmail}
+              type="email"
+              autoComplete="email"
+              required
+              icon={<Mail className="h-5 w-5" />}
+            />
+            <Input
+              label="Password"
+              value={password}
+              onChange={setPassword}
+              type="password"
+              autoComplete="current-password"
+              required
+              icon={<Lock className="h-5 w-5" />}
+            />
 
-                <div>
-                    <label className="text-sm font-medium text-slate-700">メールアドレス</label>
-                    <input
-                        className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 outline-none focus:ring-2 focus:ring-green-500"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        type="email"
-                        autoComplete="email"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="text-sm font-medium text-slate-700">Password</label>
-                    <input
-                        className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 outline-none focus:ring-2 focus:ring-green-500"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        type="password"
-                        autoComplete="current-password"
-                        required
-                    />
-                </div>
-
-                <button
-                    disabled={loading}
-                    className="w-full rounded-xl bg-green-600 px-4 py-2.5 font-semibold text-white hover:bg-green-700 disabled:opacity-60"
-                >
-                    {loading ? "Signing in…" : "Login"}
-                </button>
-            </form>
-        </div>
-    );
-    //awaitでデータを待っている間のみsetLoadingでloading=trueになるのでその間disabled=trueでボタンが押せなくなる
-    //disableの処理により多重クリック防止が実現する。
-    //そしてボタンでの表示が、三項演算子によりSigning in…に切り替わる。
+            <Button type="submit" variant="primary" size="lg" fullWidth disabled={loading}>
+              {loading ? "Signing in…" : "Login"}
+            </Button>
+          </form>
+        </Panel>
+      </div>
+    </div>
+  );
 }
