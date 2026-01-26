@@ -99,15 +99,9 @@ export default function AdminDashboard() {
         <div className="mx-auto max-w-5xl px-4 py-10 ">
             <div className="flex items-end justify-between gap-3 ">
 
-                
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Admin</h1>
-                    <p className="mt-1 text-sm text-slate-600">参加希望（applications）一覧</p>
-                </div>
-
                 <button
                     onClick={signOut}
-                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    className="rounded-xl border bg-green-600  border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                 >
                     Logout
                 </button>
@@ -119,39 +113,7 @@ export default function AdminDashboard() {
                 </div>
             )}
 
-            <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200">
-                <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-50 text-slate-600">
-                        <tr>
-                            <th className="px-4 py-3">Time</th>
-                            <th className="px-4 py-3">Name</th>
-                            <th className="px-4 py-3">Email</th>
-                            <th className="px-4 py-3">Grade</th>
-                            <th className="px-4 py-3">Message</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200">
-                        {apps.map((a) => (
-                            <tr key={a.id} className="text-slate-800">
-                                <td className="px-4 py-3 whitespace-nowrap">
-                                    {new Date(a.created_at).toLocaleString()}
-                                </td>
-                                <td className="px-4 py-3">{a.name}</td>
-                                <td className="px-4 py-3">{a.email || "-"}</td>
-                                <td className="px-4 py-3">{a.grade || "-"}</td>
-                                <td className="px-4 py-3">{a.message || "-"}</td>
-                            </tr>
-                        ))}
-                        {!apps.length && (
-                            <tr>
-                                <td className="px-4 py-6 text-slate-600" colSpan={5}>
-                                    まだ参加希望データがありません（Google Form運用中ならここは空でOK）
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+
             <section className="mt-8">
                 <div className="flex items-end justify-between">
                     <div>
