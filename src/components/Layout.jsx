@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useLang } from "../contexts/LangContext";
 import TalkMatesLogo from "../assets/TalkMatesLogo.png";
@@ -7,6 +8,10 @@ import { Home, CalendarDays, Languages, Shield } from "lucide-react";
 export default function Layout() {
   const { lang, toggle } = useLang();
   const loc = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [loc.pathname]);
 
   const navItem = (to, label, Icon) => {
     const active = loc.pathname === to || (to === "/events" && loc.pathname.startsWith("/events"));
@@ -69,34 +74,98 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="mt-16 border-t-2 border-slate-100 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-medium text-slate-600">
-            made by 萩原大竣 <span className="text-blue-600">/</span> taishun-hagihara
-          </p>
-          <div className="flex flex-wrap items-center gap-4">
-            <a
-              className="text-sm font-semibold text-blue-600 hover:text-blue-700"
-              href="https://taishun-portfolio.com/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              ポートフォリオサイトへ↗︎
-            </a>
-            <a
-              className="text-sm font-semibold text-green-700 hover:text-green-800"
-              href="https://www.instagram.com/talkmates_2025/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Instagram↗︎
-            </a>
-            <Link className="text-sm font-semibold text-slate-700 hover:text-slate-900" to="/admin/login">
-              Staff Login
-            </Link>
+      <footer className="mt-16 bg-linear-to-b from-[#0b1220] via-[#0a1324] to-[#060b14]">
+        <div className="mx-auto max-w-6xl px-4 py-14">
+          <div className="grid gap-12 md:grid-cols-3">
+            {/* Brand */}
+            <div>
+              <div className="text-3xl font-black tracking-tight text-white">
+                TalkMates
+              </div>
+
+              <p className="mt-6 max-w-sm text-lg font-medium leading-relaxed text-slate-400">
+                {lang === "ja"
+                  ? "日本人学生と留学生の架け橋となる国際交流サークルです。"
+                  : "We are an international exchange circle connecting Japanese and international students."}
+              </p>
+            </div>
+
+            {/* Links */}
+            <div>
+              <h3 className="text-2xl font-black text-white">Links</h3>
+              <ul className="mt-6 space-y-4 text-lg font-semibold">
+                <li>
+                  <Link
+                    to="/"
+                    className="text-slate-400 transition hover:text-white"
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/events"
+                    className="text-slate-400 transition hover:text-white"
+                  >
+                    Events
+                  </Link>
+                </li>
+              
+
+                <li>
+                  <Link
+                    to="/admin/login"
+                    className="text-slate-400 transition hover:text-white"
+                  >
+                    Staff Login
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Creator */}
+            <div>
+              <h3 className="text-2xl font-black text-white">Creater Contact</h3>
+
+              <div className="mt-6 space-y-3 text-lg font-medium text-slate-400">
+                <p>
+                  Created by{" "}
+                  <span className="font-bold text-slate-200">
+                    Taishun Hagihara
+                  </span>
+                </p>
+
+                <a
+                  className="inline-flex items-center gap-2 font-semibold text-slate-300 transition hover:text-white"
+                  href="https://taishun-portfolio.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Portfolio ↗︎
+                </a>
+
+                {/* TalkMatesのインスタも置きたいなら（不要なら削除OK） */}
+                <a
+                  className="block font-semibold text-slate-300 transition hover:text-white"
+                  href="https://www.instagram.com/tais_.ha/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Instagram ↗︎
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 h-px w-full bg-white/10" />
+
+          <div className="mt-6 flex flex-col gap-2 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+            <p>© {new Date().getFullYear()} TalkMates</p>
+            
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
