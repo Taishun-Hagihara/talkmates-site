@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
+import { getEventRegistrationCount } from "../lib/eventHelpers";
 import {
   campusOptions,
   japaneseLevelOptions,
@@ -21,6 +22,7 @@ export default function EventRegister() {
 
   const [event, setEvent] = useState(null);
   const [currentCount, setCurrentCount] = useState(0);
+  const [countLoading, setCountLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -44,6 +46,7 @@ export default function EventRegister() {
   // データ取得関数
   const fetchEventData = useCallback(async (showLoading = true) => {
     if (showLoading) setLoading(true);
+    setCountLoading(true);
 
     const { data: eventData } = await supabase
       .from("events")
@@ -54,17 +57,23 @@ export default function EventRegister() {
     if (!eventData) {
       setEvent(null);
       setLoading(false);
+      setCountLoading(false);
       return;
     }
 
     setEvent(eventData);
 
-    const { count } = await supabase
-      .from("event_registrations")
-      .select("*", { count: "exact", head: true })
-      .eq("event_id", eventData.id);
+    // RPC 経由で参加人数を取得（エラー時は安全側に倒す）
+    const { count, error } = await getEventRegistrationCount(eventData.id);
 
-    setCurrentCount(count || 0);
+    if (error) {
+      console.warn("[EventRegister] failed to fetch registration count:", error);
+      // エラー時は満員扱い（安全側）
+      setCurrentCount(eventData.capacity ?? 0);
+    } else {
+      setCurrentCount(count ?? 0);
+    }
+    setCountLoading(false);
     setLoading(false);
   }, [slug]);
 
@@ -87,7 +96,12 @@ export default function EventRegister() {
     };
   }, [fetchEventData, success]);
 
-  const isFull = event?.capacity !== null && currentCount >= event?.capacity;
+  // 読み込み中またはエラー時は安全側（登録不可）
+  const isFull = useMemo(() => {
+    if (countLoading) return true; // 読み込み中は登録不可
+    if (event?.capacity === null) return false; // 無制限
+    return currentCount >= event.capacity;
+  }, [countLoading, event?.capacity, currentCount]);
 
   const validate = () => {
     if (!name.trim()) {
@@ -245,7 +259,12 @@ export default function EventRegister() {
             {event.location}
           </Badge>
         )}
-        {event.capacity !== null && (
+        {event.capacity !== null && countLoading && (
+          <Badge variant="neutral">
+            {lang === "ja" ? "席数確認中..." : "Checking seats..."}
+          </Badge>
+        )}
+        {event.capacity !== null && !countLoading && (
           <Badge variant={isFull ? "error" : "info"}>
             {lang === "ja" ? "参加者" : "Registered"}: {currentCount} / {event.capacity}
             {isFull && (lang === "ja" ? "（満員）" : " (Full)")}
@@ -254,7 +273,13 @@ export default function EventRegister() {
       </div>
 
       <div className="mt-6">
-        {isFull ? (
+        {countLoading ? (
+          <Alert variant="info">
+            {lang === "ja"
+              ? "席数を確認中です。しばらくお待ちください..."
+              : "Checking available seats. Please wait..."}
+          </Alert>
+        ) : isFull ? (
           <Alert variant="error">
             {lang === "ja"
               ? "申し訳ありませんが、定員に達したため参加登録を受け付けていません。"
