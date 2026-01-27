@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
+import { getEventRegistrationCount } from "../lib/eventHelpers";
+import { supabase } from "../lib/supabase";
 import { CalendarDays, MapPin } from "lucide-react";
 
 function pickLang(lang, en, ja) {
@@ -50,10 +51,7 @@ export default function Card({ e }) {
     if (capacity === null) return;
 
     (async () => {
-      const { count, error } = await supabase
-        .from("event_registrations")
-        .select("id", { count: "exact", head: true })
-        .eq("event_id", e.id);
+      const { count, error } = await getEventRegistrationCount(e.id);
 
       if (cancelled) return;
 

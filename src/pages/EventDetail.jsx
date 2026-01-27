@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
+import { getEventRegistrationCount } from "../lib/eventHelpers";
 import { CalendarDays, MapPin, Users, ArrowLeft } from "lucide-react";
 
 function pickLang(lang, en, ja) {
@@ -84,17 +85,15 @@ export default function EventDetail() {
 
       setCountLoading(true);
 
-      const { count: c, error } = await supabase
-        .from("event_registrations")
-        .select("id", { count: "exact", head: true })
-        .eq("event_id", event.id);
+      const { count: c, error } = await getEventRegistrationCount(event.id);
 
       if (cancelled) return;
 
       setCountLoading(false);
 
       if (error) {
-        setCountErr(error.message);
+        console.warn("[EventDetail] failed to fetch registration count:", error);
+        setCountErr(error);
         return;
       }
       setCount(c ?? 0);
