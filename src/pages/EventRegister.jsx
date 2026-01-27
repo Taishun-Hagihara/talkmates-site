@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
@@ -34,33 +34,58 @@ export default function EventRegister() {
   const [japaneseMotivation, setJapaneseMotivation] = useState("");
   const [englishLevel, setEnglishLevel] = useState("");
 
+  // 成功・エラー画面に遷移したときにページトップにスクロール
   useEffect(() => {
-    (async () => {
-      setLoading(true);
+    if (success || error) {
+      window.scrollTo(0, 0);
+    }
+  }, [success, error]);
 
-      const { data: eventData } = await supabase
-        .from("events")
-        .select("id,slug,title_en,title_ja,starts_at,location,capacity")
-        .eq("slug", slug)
-        .maybeSingle();
+  // データ取得関数
+  const fetchEventData = useCallback(async (showLoading = true) => {
+    if (showLoading) setLoading(true);
 
-      if (!eventData) {
-        setEvent(null);
-        setLoading(false);
-        return;
-      }
+    const { data: eventData } = await supabase
+      .from("events")
+      .select("id,slug,title_en,title_ja,starts_at,location,capacity")
+      .eq("slug", slug)
+      .maybeSingle();
 
-      setEvent(eventData);
-
-      const { count } = await supabase
-        .from("event_registrations")
-        .select("*", { count: "exact", head: true })
-        .eq("event_id", eventData.id);
-
-      setCurrentCount(count || 0);
+    if (!eventData) {
+      setEvent(null);
       setLoading(false);
-    })();
+      return;
+    }
+
+    setEvent(eventData);
+
+    const { count } = await supabase
+      .from("event_registrations")
+      .select("*", { count: "exact", head: true })
+      .eq("event_id", eventData.id);
+
+    setCurrentCount(count || 0);
+    setLoading(false);
   }, [slug]);
+
+  // 初回読み込み
+  useEffect(() => {
+    fetchEventData();
+  }, [fetchEventData]);
+
+  // ページにフォーカスが戻ったときにデータを再取得
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && !success) {
+        fetchEventData(false);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [fetchEventData, success]);
 
   const isFull = event?.capacity !== null && currentCount >= event?.capacity;
 
