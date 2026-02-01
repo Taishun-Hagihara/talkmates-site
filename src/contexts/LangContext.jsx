@@ -1,4 +1,5 @@
-//ボチボチの理解って感じだけど螺旋的に学習が進んでいくものだとして一旦他のところを勉強する。
+//ボチボチの理解って感じだけど螺旋的に学習が進んでいくものだとして一旦他のところを勉強する。。
+//propsとuseContextの理解を上げる必要がある
 import { createContext, useContext, useMemo, useState } from "react";
 
 const LangContext = createContext(null);
