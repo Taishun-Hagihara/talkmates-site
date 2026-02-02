@@ -3,10 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useLang } from "../contexts/LangContext";
 import { getEventRegistrationCount } from "../lib/eventHelpers";
 import { supabase } from "../lib/supabase";
+//lucide-reactはアイコン用の外部ライブラリ
 import { CalendarDays, MapPin } from "lucide-react";
 
 function pickLang(lang, en, ja) {
-  return lang === "ja" && ja ? ja : en;
+  //return lang === "ja" && (ja ? ja : en);ではないので注意
+  return (lang === "ja" && ja) ? ja : en;
 }
 
 function coverUrl(cover_path) {
