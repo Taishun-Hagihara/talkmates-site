@@ -14,6 +14,7 @@ function pickLang(lang, en, ja) {
 function coverUrl(cover_path) {
   if (!cover_path) return "";
   const { data } = supabase.storage.from("event-covers").getPublicUrl(cover_path);
+  //||に関して、&&と逆やなと思ってる。左がtrueなら左を返すfalseなら右を返す
   return data?.publicUrl || "";
 }
 
