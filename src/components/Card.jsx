@@ -119,7 +119,7 @@ export default function Card({ e }) {
   }, [isEnded, capacity, regCount, countErr, lang]);
 
   const buttonClass = "bg-green-600 hover:bg-green-700 focus-visible:ring-green-600";
-
+//return以下は問題ない
   return (
     <Link
       to={`/events/${e.slug}`}
