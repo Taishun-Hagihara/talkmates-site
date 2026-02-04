@@ -1,3 +1,4 @@
+//理解済み
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { useLang } from "../contexts/LangContext";
@@ -37,6 +38,8 @@ export default function Card({ e }) {
   const isEnded = useMemo(() => {
     const start = new Date(e.starts_at);
     if (Number.isNaN(start.getTime())) return false;
+    //Date()で引数なしの時は今この瞬間の日時を表す
+    //return start < new Date()はbooleanでtrueかfalseを返す。
     return start < new Date();
   }, [e.starts_at]);
 
@@ -100,7 +103,7 @@ export default function Card({ e }) {
         accent: "green",
       };
     }
-
+//バグ回避のためにMath.max()を用いかつ引数に0を含めている。
     const remaining = Math.max(capacity - regCount, 0);
 
     if (remaining <= 0) {
