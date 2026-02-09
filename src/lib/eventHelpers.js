@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabase } from "./supabase.js";
 
 /**
  * イベントの参加人数を RPC 経由で取得
