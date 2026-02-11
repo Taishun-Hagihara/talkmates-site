@@ -1,5 +1,5 @@
 import React from "react";
-
+//全体として、毎回プログラムを書かなくてもいいようにまとめている。一貫したデザインを作ることができる。
 export function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
