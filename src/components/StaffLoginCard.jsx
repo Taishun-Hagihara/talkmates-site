@@ -1,3 +1,4 @@
+//理解済み
 import { Link } from "react-router-dom";
 import { useLang } from "../contexts/LangContext";
 
