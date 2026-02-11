@@ -1,3 +1,4 @@
+//理解済み sqlで定義している関数について、(get_event_registration_count)は学習の余地がある。
 import { supabase } from "./supabase.js";
 
 /**
