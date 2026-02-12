@@ -3,7 +3,7 @@ import React from "react";
 export function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-//propsって何やったかな
+
 export function Panel({ className = "", children, ...props }) {
   return (
     <div
