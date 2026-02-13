@@ -1,5 +1,7 @@
+//おおよそ理解
 import React from "react";
 //全体として、毎回プログラムを書かなくてもいいようにまとめている。一貫したデザインを作ることができる。
+//プログラムとしては、理解できていて、どんな感じでimportして使っているかに関しては、他のコード見ることで学習しようと考ええる。
 export function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
