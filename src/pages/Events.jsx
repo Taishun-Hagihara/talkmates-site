@@ -1,3 +1,4 @@
+//他のコードと基本おなじ
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useLang } from "../contexts/LangContext";
