@@ -1,3 +1,4 @@
+//useCallbackが何やねんそれ状態である。
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
