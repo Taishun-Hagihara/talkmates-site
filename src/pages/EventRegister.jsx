@@ -1,4 +1,5 @@
 //useCallbackが何やねんそれ状態である。
+//useCallbackとuseMemoの違いについて、zennの記事にしてまとめて理解した。
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
