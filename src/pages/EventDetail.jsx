@@ -51,7 +51,16 @@ export default function EventDetail() {
 
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-600">
                     <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">
-                        {new Date(event.starts_at).toLocaleString()}
+                        {event.starts_at
+                            ? new Date(event.starts_at).toLocaleString(lang === "ja" ? "ja-JP" : "en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit"
+                              })
+                            : (lang === "ja" ? "日時未定" : "TBD")
+                        }
                     </span>
 
                     {event.location && (
